@@ -5,8 +5,8 @@ Funcionalidade: Tratar falhas de entrega
   Quero acompanhar as tentativas e o resultado das entregas de newsletters
   Para identificar os envios que falharam e evitar novas entregas a endereços removidos da base
 
-  # A distribuição dos intervalos de 5, 15 e 45 minutos depende da definição em docs/revisao.md.
-  # Os cenários abaixo verificam os resultados das tentativas, sem fixar essa distribuição.
+  # RN07: três tentativas no total, com intervalos de 5 e 15 minutos.
+  # A inconsistência dos 45 minutos do enunciado está registrada em docs/revisao.md.
 
   Contexto:
     Dado que a assinante Carla está ativa na lista de newsletters
@@ -33,6 +33,8 @@ Funcionalidade: Tratar falhas de entrega
   Cenário: Remover da base um assinante com falha permanente de endereço
     Quando a primeira tentativa de entrega para Carla resulta em uma falha permanente de endereço
     Então Carla deve ser removida da base de assinantes
+    E a entrega deve estar marcada como falha definitiva após o hard bounce
+    E não deve haver novas tentativas previstas para essa entrega
 
   @excecao
   Cenário: Manter na base um assinante com falha temporária de entrega
@@ -46,3 +48,18 @@ Funcionalidade: Tratar falhas de entrega
     Quando o sistema processa novamente as entregas pendentes
     Então a entrega para Carla deve continuar com 3 tentativas
     E a entrega deve continuar marcada como falha definitiva
+
+  @limite
+  Esquema do Cenário: Respeitar o intervalo antes de tentar novamente
+    Dado que a entrega já teve <anteriores> tentativas com falhas temporárias
+    Quando passam <minutos> minutos desde a última tentativa e o sistema processa as entregas
+    Então a entrega deve ter <total> tentativas registradas
+
+    Exemplos:
+      | anteriores | minutos | total |
+      | 1          | 4       | 1     |
+      | 1          | 5       | 2     |
+      | 1          | 6       | 2     |
+      | 2          | 14      | 2     |
+      | 2          | 15      | 3     |
+      | 2          | 16      | 3     |

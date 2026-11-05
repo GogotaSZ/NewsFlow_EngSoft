@@ -1,0 +1,33 @@
+{
+  "name": "newsflow_engsoft",
+  "version": "1.0.0",
+  "description": "Exercício de histórias de usuário, cenários Gherkin e automação de testes para o NewsFlow, plataforma de newsletters e notificações da Vértice.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "cucumber-js",
+    "test:dry": "cucumber-js --profile verificacao --dry-run",
+    "test:parallel": "cucumber-js --profile verificacao --parallel 2",
+    "test:smoke": "cucumber-js --profile verificacao --tags @smoke"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GogotaSZ/NewsFlow_EngSoft.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/GogotaSZ/NewsFlow_EngSoft/issues"
+  },
+  "homepage": "https://github.com/GogotaSZ/NewsFlow_EngSoft#readme",
+  "devDependencies": {
+    "@cucumber/cucumber": "^13.3.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

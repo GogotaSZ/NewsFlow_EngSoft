@@ -47,3 +47,17 @@ Funcionalidade: Limitar o recebimento de newsletters
     Quando uma compra de Carla gera um e-mail transacional de recibo
     Então o recibo deve ser entregue a Carla
     E Carla deve ter recebido 2 newsletters na semana atual
+
+  @limite
+  Cenário: Reiniciar a contagem na virada da semana em São Paulo
+    Dado que Carla já recebeu 1 newsletter no domingo às 23h59 em São Paulo
+    Quando o relógio chega à segunda-feira às 00h00 em São Paulo
+    Então a contagem semanal de Carla deve ser 0
+
+  @excecao
+  Cenário: Manter o excedente na fila até a semana seguinte
+    Dado que Carla já recebeu 2 newsletters na semana atual
+    E que a edição aprovada "Informativo #42" está na fila da semana seguinte para Carla
+    Quando o sistema processa a fila ainda na mesma semana
+    Então a edição "Informativo #42" deve continuar na fila da semana seguinte para Carla
+    E Carla deve ter recebido 2 newsletters na semana atual

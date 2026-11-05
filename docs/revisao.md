@@ -1,42 +1,53 @@
-# Pontos para revisão das histórias
+# Decisões e interpretação do enunciado
 
-As histórias reproduzem as regras selecionadas e foram revisadas, com prioridade média para a RN05. Os cenários estão em primeira versão. Os pontos abaixo registram o tratamento dado às ambiguidades e o que ainda precisa ser esclarecido antes da automação.
+As histórias e os cenários estão implementados. Este arquivo registra as definições usadas para que a documentação, os testes e o domínio tenham o mesmo comportamento.
 
 ## RN01 — Periodicidade do salvamento
 
-A tabela de regras determina salvamento automático a cada 30 segundos. O exemplo de história usa a expressão “30 segundos de inatividade”. Esses comportamentos são diferentes quando a redatora continua digitando.
+A tabela de regras determina salvamento automático a cada 30 segundos. O exemplo de história usa “30 segundos de inatividade”.
 
-**Texto adotado na US01:** a cada 30 segundos, conforme a tabela de regras de negócio. A revisão deve confirmar se o tempo depende de inatividade.
+**Definição adotada:** salvamento periódico a cada 30 segundos a partir da criação da edição, sem depender de inatividade, seguindo a tabela de regras. Os testes avançam um relógio controlado; não há espera real.
 
-A restauração sem apagar versões posteriores foi mantida por constar no exemplo de história do próprio enunciado. Ela respeita o limite das últimas 20 versões.
+A restauração recupera o conteúdo sem apagar as versões posteriores que continuam entre as últimas 20. Esse comportamento segue o exemplo de história do enunciado. A numeração continua crescente mesmo depois de versões antigas saírem do histórico.
+
+## RN02 — Aprovação
+
+A autora não pode aprovar sua edição, mesmo tendo o papel de revisora. A reprovação exige comentário não vazio e devolve a edição ao rascunho. Alterar ou restaurar o texto remove a aprovação anterior.
+
+A autorização de envio e agendamento verifica a aprovação. Não implementa os prazos nem os segmentos das regras RN03 e RN04, que estão fora do escopo.
 
 ## RN05 — Definição de semana
 
-A regra define o limite de duas newsletters por semana, mas não informa quando a semana começa nem qual fuso deve ser usado nessa contagem.
+O enunciado não informa quando começa a semana nem o fuso da contagem.
 
-**A definir:** início e término da semana e fuso da contagem. Essas definições serão necessárias para os cenários que atravessam a mudança de semana.
+**Convenção adotada na implementação:** a semana começa na segunda-feira às 00h00 e termina imediatamente antes da segunda-feira seguinte, no fuso America/Sao_Paulo. Essa é uma convenção do projeto, não uma exigência expressa do enunciado. Um cenário verifica a passagem de domingo às 23h59 para segunda-feira às 00h00.
 
-**Tratamento nos cenários:** os dados informam explicitamente a semana atual, a anterior e a seguinte. O cenário de fila já começa na semana seguinte à retenção, sem assumir uma data ou um fuso para a virada. A automação dessa fronteira de calendário dependerá da definição acima.
+O excedente permanece em fila até a semana seguinte. Ao processar a fila, o sistema verifica novamente o limite de duas newsletters; se o assinante continuar no limite, a entrega fica para a próxima semana. E-mails transacionais não entram na contagem.
 
 ## RN07 — Quantidade de tentativas e intervalos
 
-A regra informa “até 3 tentativas”, lista os intervalos de 5, 15 e 45 minutos e determina falha definitiva depois da terceira tentativa. Três tentativas no total têm apenas dois intervalos entre elas; três novas tentativas após o envio inicial totalizam quatro tentativas.
+O enunciado informa “até 3 tentativas”, lista intervalos de 5, 15 e 45 minutos e determina falha definitiva depois da terceira tentativa. Três tentativas no total permitem apenas dois intervalos entre elas.
 
-**Texto adotado na US04:** os números foram preservados como aparecem no enunciado, sem escolher silenciosamente uma interpretação.
+**Decisão aprovada na revisão:**
 
-**A definir:** se o envio inicial conta como a primeira tentativa e como os três intervalos se aplicam à sequência de entregas. O critério de intervalos será ajustado após essa definição.
+1. Primeira tentativa no momento inicial.
+2. Segunda tentativa após 5 minutos da primeira falha temporária.
+3. Terceira tentativa após mais 15 minutos da segunda falha temporária.
+4. Se a terceira tentativa falhar, a entrega é marcada como falha definitiva, sem quarta tentativa.
 
-A regra também não explicita se um hard bounce encerra imediatamente as tentativas da entrega atual. A remoção do assinante da base está prevista na história; o comportamento da entrega em andamento precisa ser confirmado antes da automação.
+O intervalo de **45 minutos não é utilizado**, pois seria necessário permitir uma quarta tentativa, contrariando a decisão de manter três no total. A inconsistência fica registrada aqui e no critério de aceitação da US04.
 
-**Tratamento nos cenários:** a terceira tentativa sem sucesso encerra a entrega, conforme o texto da regra. Os cenários não fixam os intervalos entre tentativas; essa cobertura está pendente da definição acima. O cenário de hard bounce verifica a remoção da base, sem assumir o destino das tentativas da entrega atual.
+**Convenção complementar da implementação:** hard bounce remove o assinante da base e encerra imediatamente a entrega, sem novas tentativas. Soft bounce mantém o assinante na base e permite novas tentativas enquanto houver limite. Essa convenção evita continuar tentando um endereço identificado como permanentemente inválido.
 
-## Cobertura da primeira versão dos cenários
+Os cenários cobrem os dois lados das fronteiras: 4/5/6 minutos para a segunda tentativa e 14/15/16 minutos para a terceira.
 
-| História | Comportamentos descritos | Ponto ainda pendente |
-| --- | --- | --- |
-| US01 — RN01 | Criação em rascunho, fronteira de 30 segundos, numeração e retenção de 20 versões, restauração e versão indisponível | Confirmar periodicidade em relação à inatividade |
-| US02 — RN02 | Aprovação por outra revisora, bloqueio da autora, reprovação com e sem comentário, bloqueio de envio e agendamento sem aprovação | Nenhum ponto adicional identificado |
-| US03 — RN05 | Limite semanal, fila da semana seguinte e tratamento de e-mails transacionais | Definir a fronteira de calendário da semana |
-| US04 — RN07 | Sucesso na segunda tentativa, falha definitiva na terceira, bloqueio da quarta, hard bounce e soft bounce | Distribuir os intervalos e definir o efeito do hard bounce nas tentativas atuais |
+## Rastreabilidade
 
-Os cenários de aprovação verificam apenas o bloqueio de envio e agendamento pela RN02. As regras de antecedência, segmentos e execução do agendamento continuam fora do escopo.
+| História | Regra | Arquivo de cenários | Implementação dos passos |
+| --- | --- | --- | --- |
+| US01 | RN01 | features/us01-rascunho.feature | features/step_definitions/rascunho.steps.js |
+| US02 | RN02 | features/us02-aprovacao.feature | features/step_definitions/aprovacao.steps.js |
+| US03 | RN05 | features/us03-frequencia.feature | features/step_definitions/frequencia.steps.js |
+| US04 | RN07 | features/us04-falha-entrega.feature | features/step_definitions/entrega.steps.js |
+
+O domínio está em src/newsflow.js. Cada cenário recebe um serviço e um relógio próprios por meio do World, sem estado global compartilhado.

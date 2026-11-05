@@ -1,6 +1,6 @@
 # Histórias de usuário — NewsFlow
 
-Histórias revisadas. Os cenários associados estão em primeira versão para revisão. As histórias seguem o modelo do enunciado: papel, objetivo, benefício, critérios de aceitação, regras cobertas, prioridade e referência aos cenários.
+Histórias revisadas e cenários associados automatizados. As histórias seguem o modelo do enunciado: papel, objetivo, benefício, critérios de aceitação, regras cobertas, prioridade e referência aos cenários.
 
 Foram selecionadas as regras RN01, RN02, RN05 e RN07. As histórias são numeradas de US01 a US04; os caminhos dos cenários indicam os arquivos associados a cada história.
 
@@ -78,7 +78,7 @@ Foram selecionadas as regras RN01, RN02, RN05 e RN07. As histórias são numerad
 **Critérios de aceitação**
 
 - Uma entrega que falha pode ter até três tentativas.
-- As tentativas respeitam os intervalos de 5, 15 e 45 minutos previstos na regra de negócio.
+- A segunda tentativa ocorre após 5 minutos da primeira falha temporária; a terceira ocorre após mais 15 minutos da segunda falha temporária (decisão da revisão; a inconsistência dos 45 minutos está registrada em docs/revisao.md).
 - Após a terceira tentativa sem sucesso, a entrega é marcada como falha definitiva.
 - Uma falha permanente de endereço (hard bounce) remove o assinante da base.
 - Uma falha temporária de entrega (soft bounce) mantém o assinante na base.

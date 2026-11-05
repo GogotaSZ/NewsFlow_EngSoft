@@ -59,3 +59,12 @@ Funcionalidade: Salvar rascunho automaticamente
     Quando a redatora solicita a restauração da versão 1
     Então a restauração deve ser recusada porque a versão não está disponível
     E o texto atual da edição deve ser "Texto atual"
+
+  @feliz
+  Cenário: Salvar periodicamente o conteúdo alterado
+    Dado que existe a edição "Informativo #42" em rascunho com o texto "Primeira notícia"
+    E que passam 30 segundos e a redatora altera o texto para "Notícia revisada"
+    Quando ocorre o próximo salvamento automático após 30 segundos
+    Então a edição deve ter 2 versões salvas
+    E a versão 1 deve conter o texto "Primeira notícia"
+    E a versão 2 deve conter o texto "Notícia revisada"

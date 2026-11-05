@@ -49,3 +49,14 @@ Funcionalidade: Revisar edição antes do envio
       | operacao    |
       | envio       |
       | agendamento |
+
+  @feliz
+  Esquema do Cenário: Autorizar envio e agendamento após aprovação
+    Dado que a edição "Informativo #42" foi aprovada por Beatriz
+    Quando a gestora solicita o <operacao> da edição "Informativo #42"
+    Então a solicitação deve ser autorizada pela aprovação da edição
+
+    Exemplos:
+      | operacao    |
+      | envio       |
+      | agendamento |
