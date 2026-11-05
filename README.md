@@ -13,7 +13,7 @@ A suíte verifica quatro regras da plataforma de newsletters NewsFlow. Os cenár
 0m 0.250s (0m 0.104s executing your code)
 ```
 
-O Cucumber gerou um relatório HTML navegável com o resultado de cada cenário e de seus passos. Abra o arquivo no navegador para consultar a execução. [Relatório de testes](relatorios/cucumber-report.html).
+O Cucumber gerou um relatório HTML navegável com o resultado de cada cenário e de seus passos. Abra o arquivo no navegador para consultar a execução. [Relatório de testes](https://gogotasz.github.io/NewsFlow_EngSoft/relatorios/cucumber-report.html).
 
 ## O que foi testado
 
