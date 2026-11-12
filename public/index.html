@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NewsFlow · Redação</title>
+  <link rel="stylesheet" href="/style.css">
+  <script defer src="/newsflow.js"></script>
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <header><a href="/" class="brand">NewsFlow<span> / Vértice</span></a><span>Workspace editorial</span></header>
+  <main>
+    <div class="intro"><p class="eyebrow">DA IDEIA À APROVAÇÃO</p><h1>Sua próxima edição começa aqui.</h1><p>Escreva, revise e prepare suas histórias para chegar mais longe.</p></div>
+    <aside>Ambiente de demonstração · Dados salvos neste navegador. Os perfis abaixo simulam a equipe; não há autenticação ou envio de e-mails.</aside>
+    <div class="toolbar"><h2>Redação</h2><div><label for="perfil">Perfil ativo</label><select id="perfil"><option>Ana</option><option>Beatriz</option></select></div></div>
+    <p role="alert" id="erro"></p><p role="status" id="mensagem"></p>
+    <div class="workspace">
+      <section class="panel"><h2>Nova edição</h2><p>Transforme uma ideia em um novo rascunho.</p>
+        <form id="nova"><label for="titulo">Título da edição</label><input id="titulo" maxlength="120" placeholder="Ex.: Novidades da semana">
+        <label for="conteudo">Conteúdo inicial</label><textarea id="conteudo" rows="6" placeholder="O que você quer contar?"></textarea><button>Criar rascunho</button></form>
+      </section>
+      <section class="panel"><h2>Suas edições</h2><p id="resumo"></p><p id="vazio">Nenhuma edição criada. Comece pelo seu primeiro rascunho.</p><ul id="edicoes"></ul></section>
+    </div>
+  </main><footer>NewsFlow · Conteúdo com cuidado, em cada etapa.</footer>
+</body>
+</html>

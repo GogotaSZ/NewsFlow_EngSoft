@@ -215,4 +215,4 @@ class NewsFlow {
   }
 }
 
-module.exports = { NewsFlow, semanaDaData }
+if (typeof module !== 'undefined') module.exports = { NewsFlow, semanaDaData }

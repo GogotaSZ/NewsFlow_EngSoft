@@ -7,6 +7,11 @@
     "doc": "docs"
   },
   "scripts": {
+    "start": "node server.js",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
+    "test:antiteste": "node scripts/antiteste.js",
     "test": "cucumber-js",
     "test:dry": "cucumber-js --profile verificacao --dry-run",
     "test:parallel": "cucumber-js --profile verificacao --parallel 2",
@@ -25,7 +30,8 @@
   },
   "homepage": "https://github.com/GogotaSZ/NewsFlow_EngSoft#readme",
   "devDependencies": {
-    "@cucumber/cucumber": "^13.3.0"
+    "@cucumber/cucumber": "^13.3.0",
+    "@playwright/test": "^1.65.0"
   },
   "engines": {
     "node": ">=24"
