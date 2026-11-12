@@ -7,7 +7,7 @@ O NewsFlow é um protótipo para criar, editar e revisar newsletters. O projeto 
 Instale **Node.js 24 ou superior**, que inclui o npm. Se for baixar o código pelo terminal, instale também o Git.
 
 ```sh
-git clone --branch codex/parte-2-playwright https://github.com/GogotaSZ/NewsFlow_EngSoft.git
+git clone --branch parte-2-playwright https://github.com/GogotaSZ/NewsFlow_EngSoft.git
 cd NewsFlow_EngSoft
 ```
 
