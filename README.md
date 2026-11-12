@@ -1,118 +1,79 @@
-# NewsFlow — Testes de aceitação com Cucumber.js e Playwright
+# NewsFlow
 
-## Parte 2 — Aplicação e testes no navegador
+O NewsFlow é um protótipo para criar, editar e revisar newsletters. O projeto tem duas suítes de testes. O **Cucumber** verifica as regras de negócio. O **Playwright** usa o Chromium para testar o fluxo pela interface.
 
-A interface permite criar e editar rascunhos, solicitar revisão, bloquear autoaprovação, aprovar com outra revisora e reprovar com comentário. Os dados são persistidos localmente no navegador. Os perfis são simulados e não há envio real de e-mails.
+## 1. Preparar o projeto
+
+Instale **Node.js 24 ou superior**, que inclui o npm. Se for baixar o código pelo terminal, instale também o Git.
+
+```sh
+git clone --branch codex/parte-2-playwright https://github.com/GogotaSZ/NewsFlow_EngSoft.git
+cd NewsFlow_EngSoft
+```
+
+Se já tiver o código, abra o terminal na pasta que contém o arquivo `package.json`. Em seguida, instale as dependências e o Chromium usado pelo Playwright:
 
 ```sh
 npm ci
 npx playwright install chromium
-npx playwright test
-npx playwright show-report
 ```
 
-O Playwright inicia e encerra o app automaticamente. Para usar a interface manualmente, rode `npm start` e abra <http://127.0.0.1:5173>. Deixe a porta livre antes de executar a suíte.
+No PowerShell do Windows, se a execução de scripts `.ps1` estiver bloqueada, troque `npm` por `npm.cmd` e `npx` por `npx.cmd` em todos os comandos.
 
-Os três cenários verificam aprovação por outra revisora, bloqueio de autoaprovação e persistência do conteúdo editado. Veja os critérios, comandos e limites da entrega em [ACEITACAO.md](ACEITACAO.md).
+## 2. Abrir a aplicação
 
-**Validação: 3 testes aprovados em 4,4 segundos**, também aprovados individualmente. [Relatório Playwright com capturas](relatorios/playwright/index.html). O antiteste confirmou que a remoção do bloqueio de autoaprovação faz C2 falhar; a regra foi restaurada antes da execução final.
-
-## Roteiro para apresentar ao professor (cerca de 5 minutos)
-
-### 1. Apresentar o objetivo
-
-> O NewsFlow organiza a criação e revisão de newsletters. Nesta etapa, usamos Playwright para comprovar, pelo navegador, que os principais comportamentos da interface funcionam.
-
-### 2. Demonstrar o aplicativo
-
-Na raiz do projeto, abra um terminal PowerShell e execute:
-
-```powershell
-npm.cmd start
+```sh
+npm start
 ```
 
-Abra [o aplicativo local](http://127.0.0.1:5173) e faça o seguinte:
+Com o terminal aberto, acesse [http://127.0.0.1:5173](http://127.0.0.1:5173) no navegador. Para experimentar o fluxo:
 
-1. Com o perfil **Ana**, preencha o título e o conteúdo e clique em **Criar rascunho**.
-2. Altere o conteúdo da edição, clique em **Salvar alterações** e recarregue a página. Mostre que o texto permaneceu salvo.
-3. Clique em **Solicitar revisão** e depois em **Aprovar edição**, ainda como Ana. Mostre o alerta que impede a autoaprovação e o estado **em revisão**.
-4. Troque o **Perfil ativo** para **Beatriz** e clique em **Aprovar edição**. Mostre o estado **aprovada** e a identificação da revisora.
+1. Selecione o perfil **Ana**, preencha o título e o conteúdo e clique em **Criar rascunho**.
+2. Edite o conteúdo, clique em **Salvar alterações** e recarregue a página. O texto editado deve continuar no rascunho.
+3. Clique em **Solicitar revisão** e tente aprovar como Ana. A aplicação deve exibir um alerta e manter a edição **em revisão**.
+4. Troque o **Perfil ativo** para **Beatriz** e aprove a edição. O estado deve mudar para **aprovada**, com Beatriz identificada como revisora.
 
-### 3. Executar os três testes
+Os perfis são simulados e os dados ficam no navegador. A aprovação faz parte do fluxo editorial do protótipo, que funciona sem envio real de e-mails.
 
-Encerre o servidor manual com `Ctrl+C` no terminal anterior para liberar a porta 5173. Depois execute:
+Pressione `Ctrl+C` no terminal para parar a aplicação antes de executar o Playwright. A porta 5173 precisa estar livre.
 
-```powershell
-npx.cmd playwright test
+## 3. Executar os testes no navegador (Playwright)
+
+```sh
+npm run test:e2e
 ```
 
-O Playwright sobe o app sozinho, executa os testes e encerra o servidor. Explique o que cada cenário comprova:
+O Playwright inicia e encerra o servidor automaticamente. O Chromium roda em segundo plano e o resultado esperado no terminal é **`3 passed`**.
 
-| Cenário | Tipo | Comportamento verificado |
-| --- | --- | --- |
-| C1 | Caminho principal | Criar uma edição, solicitar revisão e obter aprovação de outra revisora. |
-| C2 | Regra que barra erro | Impedir que a autora aprove a própria edição, mantendo a revisão pendente. |
-| C3 | Regra de estado | Manter o título, o conteúdo editado e o estado do rascunho após recarregar. |
+| Teste | Resultado verificado |
+| --- | --- |
+| C1 — Aprovação por outra revisora | A edição criada por Ana fica aprovada e identifica Beatriz como revisora. |
+| C2 — Bloqueio da autoaprovação | A tentativa de Ana gera um alerta e a edição permanece em revisão. |
+| C3 — Persistência do rascunho | O título, o conteúdo salvo manualmente e o estado de rascunho permanecem após recarregar. |
 
-Cada teste usa seletores por papel, rótulo ou texto, possui várias asserções e roda independentemente. Não há esperas fixas. A execução validada teve **3 testes aprovados em 4,4 segundos**; o tempo pode variar entre máquinas.
+Para abrir o relatório gerado pela última execução:
 
-### 4. Mostrar o relatório e os critérios
-
-Para abrir o relatório da execução que acabou de fazer:
-
-```powershell
-npx.cmd playwright show-report
+```sh
+npm run test:e2e:report
 ```
 
-Mostre os três testes verdes e suas capturas. Abra também [ACEITACAO.md](ACEITACAO.md), que relaciona critério, localização do teste e evidência. Encerre o visualizador com `Ctrl+C` quando terminar.
+O relatório permite abrir cada teste e consultar seus passos e a captura da tela final. Pressione `Ctrl+C` para encerrar o visualizador. A tabela que relaciona cada critério ao teste correspondente está no [guia de aceitação](ACEITACAO.md).
 
-Uma cópia da execução validada está preservada no projeto e pode ser aberta com:
+Para consultar a execução preservada no repositório, use `npx playwright show-report relatorios/playwright`.
 
-```powershell
-npx.cmd playwright show-report relatorios/playwright
+### Verificar se o teste detecta um defeito
+
+Com a aplicação parada, execute `npm run test:antiteste`. O script desativa temporariamente o bloqueio de autoaprovação, roda apenas C2 e restaura a regra ao terminar. Aguarde o comando concluir. A falha de C2 é esperada nessa etapa. Em seguida, rode `npm run test:e2e` para confirmar que os três testes passam com a regra restaurada. [Log do antiteste](relatorios/antiteste.txt).
+
+## 4. Executar os testes de regras de negócio (Cucumber)
+
+```sh
+npm test
 ```
 
-### 5. Explicar o antiteste
+Essa suíte verifica as regras de negócio com dados em memória e um relógio controlado. Pode ser executada diretamente após `npm ci`, sem iniciar a aplicação nem instalar o Chromium.
 
-> Removemos temporariamente o bloqueio de autoaprovação. C2 falhou, comprovando que detecta o defeito. Restauramos a regra e os três testes voltaram a passar.
-
-A evidência está no [log do antiteste](relatorios/antiteste.txt). Se precisar repetir ao vivo, sem outro servidor ou teste aberto, execute e aguarde cada comando terminar:
-
-```powershell
-npm.cmd run test:antiteste
-npx.cmd playwright test
-```
-
-No primeiro comando, **uma falha de C2 é esperada**: o script introduz o defeito temporariamente, confirma que o teste o detectou e restaura o código original. Não interrompa essa demonstração. O segundo comando confirma novamente os três testes verdes com a regra correta.
-
-### O que explicar se o professor perguntar
-
-- **Playwright:** verifica ações e resultados visíveis em um navegador real.
-- **Cucumber:** mantém os 37 cenários da parte 1, cobrindo as regras de domínio. Para demonstrá-los, execute `npm.cmd test`.
-- **Perfis:** Ana e Beatriz são simuladas; não há autenticação real.
-- **Persistência:** os dados ficam no `localStorage` do navegador. C3 verifica o botão **Salvar alterações**; o salvamento automático de 30 segundos é coberto no domínio pelo Cucumber, não por esse teste de interface.
-- **Envio:** a aprovação libera a edição, mas este protótipo não envia e-mails reais.
-
-### Preparar a entrega
-
-Entregue o repositório atualizado ou um ZIP sem `node_modules`, incluindo `tests/`, `playwright.config.js`, o aplicativo, `ACEITACAO.md` e `relatorios/`. Informe os nomes dos integrantes e os comandos de execução. Em outro computador, instale Node.js 24 ou superior e execute primeiro `npm ci` e `npx playwright install chromium`.
-
-## Parte 1 — Cucumber
-
-A suíte verifica quatro regras da plataforma de newsletters NewsFlow. Os cenários em Gherkin descrevem caminhos de sucesso, bloqueios esperados e valores de fronteira.
-
-## Resultados
-
-**37 cenários aprovados e 209 passos aprovados**, sem falhas ou passos indefinidos. A suíte completa também passou em paralelo, e a verificação rápida passou nos 6 cenários marcados com `@smoke`.
-
-```text
-> npm test
-37 scenarios (37 passed)
-209 steps (209 passed)
-0m 0.250s (0m 0.104s executing your code)
-```
-
-O Cucumber gerou um relatório HTML navegável com o resultado de cada cenário e de seus passos. Abra o arquivo no navegador para consultar a execução. [Relatório de testes](https://gogotasz.github.io/NewsFlow_EngSoft/relatorios/cucumber-report.html).
+O resultado esperado é **37 cenários e 209 passos aprovados**. Abra o [relatório HTML do Cucumber](relatorios/cucumber-report.html) no navegador para consultar o resultado de cada cenário.
 
 ## O que foi testado
 
@@ -124,17 +85,6 @@ O Cucumber gerou um relatório HTML navegável com o resultado de cada cenário 
 | US04 — RN07 | Sucesso em nova tentativa, intervalos de 5 e 15 minutos, falha definitiva após três tentativas e tratamento de falhas permanentes e temporárias. | [Falhas de entrega](features/us04-falha-entrega.feature) |
 
 Os testes usam dados em memória e um relógio controlado para verificar prazos e a virada da semana. A decisão de usar três tentativas no total na RN07 e as demais interpretações do enunciado estão documentadas junto aos critérios. [Histórias e critérios](docs/historias.md) · [Decisões da revisão](docs/revisao.md).
-
-## Como reproduzir
-
-Com Node.js 24 ou superior, rode na raiz do projeto:
-
-```sh
-npm ci
-npm test
-```
-
-O segundo comando atualiza o relatório HTML. No PowerShell, use `npm.cmd` se a execução de `npm.ps1` estiver bloqueada.
 
 ## Fora de escopo
 
